@@ -370,3 +370,14 @@ def test_result_to_dict_shape(tmp_path):
     payload = scan_path(str(tmp_path), Options()).to_dict()
     for key in ("root", "files", "counts", "risk", "components", "findings", "licenses_resolved"):
         assert key in payload
+
+def test_wildcard_version_specifier(tmp_path):
+    _write(tmp_path, "package.json", '{"dependencies": {"lodash": "*"}}')
+    result = scan_path(str(tmp_path), Options())
+    assert "SBK011" in _rules_of(result)
+
+
+def test_pinned_version_is_not_a_wildcard(tmp_path):
+    _write(tmp_path, "package.json", '{"dependencies": {"lodash": "4.17.21"}}')
+    result = scan_path(str(tmp_path), Options())
+    assert "SBK011" not in _rules_of(result)

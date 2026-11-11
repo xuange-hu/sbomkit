@@ -8,7 +8,7 @@
 git clone https://github.com/xuange-hu/sbomkit
 cd sbomkit
 pip install -e ".[mcp]" pytest ruff
-pytest                 # 314 tests
+pytest                 # 315 tests
 ruff check src tests
 ```
 
