@@ -47,6 +47,14 @@ TOOLS = [
         "description": "List the rule catalogue: id, severity, title.",
         "input": {},
     },
+    {
+        "name": "sbomkit_demo",
+        "description": (
+            "Write a synthetic project to a temp directory, scan it and return the report "
+            "plus which rules the demo corpus hits - the fastest way to see the output shape."
+        ),
+        "input": {"policy": "str (optional: closed-source|weak-ok|oss|strict)"},
+    },
 ]
 
 
@@ -132,6 +140,26 @@ def _rules() -> dict[str, Any]:
     }
 
 
+def _demo(policy: str) -> dict[str, Any]:
+    import os
+    import tempfile
+
+    from . import demo as demo_mod
+    from .cli import render_scan  # function-level: cli imports this module too
+    from .scan import RULES, Options, scan_path
+
+    root = os.path.join(tempfile.gettempdir(), "sbomkit-demo-mcp")
+    demo_mod.write(root)
+    result = scan_path(root, Options(policy=policy or "closed-source"))
+    hit = {f.rule for f in result.findings}
+    return {
+        "root": root,
+        "report": render_scan(result),
+        "coverage": {rid: rid in hit for rid in sorted(RULES)},
+        "findings": len(result.findings),
+    }
+
+
 def build_server():
     """Build the MCP server. Requires the optional ``mcp`` extra."""
     try:
@@ -170,6 +198,11 @@ def build_server():
     def sbomkit_rules() -> dict:
         """List the rule catalogue."""
         return _rules()
+
+    @server.tool()
+    def sbomkit_demo(policy: str = "closed-source") -> dict:
+        """Write a synthetic project, scan it, and report rule coverage."""
+        return _demo(policy)
 
     return server
 
