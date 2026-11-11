@@ -1,6 +1,6 @@
 # sbomkit
 
-[![tests](https://img.shields.io/badge/tests-313-brightgreen)](https://github.com/xuange-hu/sbomkit/actions/workflows/ci.yml)
+[![tests](https://img.shields.io/badge/tests-314-brightgreen)](https://github.com/xuange-hu/sbomkit/actions/workflows/ci.yml)
 [![python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](pyproject.toml)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)

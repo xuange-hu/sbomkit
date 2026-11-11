@@ -110,7 +110,7 @@ def _load_license_map(path: str | None) -> dict | None:
 
 
 def _exit_for(result, fail_on: str | None) -> int:
-    if not fail_on:
+    if not fail_on or fail_on == "none":
         return 0
     hit = any(severity_at_least(f.severity, fail_on) for f in result.findings)
     return 1 if hit else 0
@@ -173,7 +173,7 @@ def cmd_diff(args: argparse.Namespace) -> int:
         print(json.dumps([e.to_dict() for e in entries], indent=2))
     else:
         print(render_diff(entries))
-    if args.fail_on:
+    if args.fail_on and args.fail_on != "none":
         worst = diffmod.worst_severity(entries, args.fail_on)
         return 1 if worst else 0
     return 0
@@ -264,7 +264,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_scan.add_argument("path", nargs="?", default=".")
     p_scan.add_argument("--json", action="store_true")
     p_scan.add_argument("--sarif", action="store_true")
-    p_scan.add_argument("--fail-on", default=None, choices=list(("info", "low", "medium", "high", "critical")))
+    p_scan.add_argument("--fail-on", default=None, choices=list(("none", "info", "low", "medium", "high", "critical")))
     p_scan.add_argument("--no-evidence", action="store_true", help="hide the source line under each finding")
     add_common(p_scan)
     p_scan.set_defaults(func=cmd_scan)
@@ -281,7 +281,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_diff.add_argument("old")
     p_diff.add_argument("new")
     p_diff.add_argument("--json", action="store_true")
-    p_diff.add_argument("--fail-on", default=None, choices=list(("info", "low", "medium", "high", "critical")))
+    p_diff.add_argument("--fail-on", default=None, choices=list(("none", "info", "low", "medium", "high", "critical")))
     p_diff.set_defaults(func=cmd_diff)
 
     p_lic = sub.add_parser("licenses", parents=[shared], help="explain a license expression")

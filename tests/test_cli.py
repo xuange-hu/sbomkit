@@ -42,6 +42,14 @@ def test_fail_on_high_is_zero_when_only_medium(tmp_path, capsys):
     capsys.readouterr()
 
 
+def test_fail_on_none_never_fails(tmp_path, capsys):
+    """`none` is the report-only gate: findings exist, the exit code stays 0."""
+    (tmp_path / "requirements.txt").write_text("requests==2.31.0\n", encoding="utf-8")
+    # the same input exits 1 at medium, so there is something to suppress
+    assert cli.main(["scan", str(tmp_path), "--fail-on", "none", "--no-color"]) == 0
+    capsys.readouterr()
+
+
 def test_ignore_rule_via_cli(tmp_path, capsys):
     (tmp_path / "requirements.txt").write_text("requests==2.31.0\n", encoding="utf-8")
     cli.main(["scan", str(tmp_path), "--ignore", "SBK001", "--json", "--no-color"])
