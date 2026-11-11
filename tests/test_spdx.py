@@ -184,3 +184,40 @@ def test_or_unknown_only():
 
 def test_and_unknown_leaf():
     assert solve("MIT AND Nonsense-1.0", "closed-source").verdict == "unknown"
+
+
+# -- the canonical expression matrix (pinned end-to-end) -------------------
+# Every row is a case the compliance docs promise the solver gets right;
+# the LicenseRef/unlisted contrast matters: custom terms are *determined*
+# "other" and fail closed, while an unlisted id is honestly unknown.
+
+MATRIX = [
+    ("(MIT OR GPL-3.0-only)", "closed-source", "allow", "MIT"),
+    ("(GPL-3.0-only OR MIT)", "closed-source", "allow", "MIT"),
+    ("MIT AND GPL-3.0-only", "closed-source", "deny", None),
+    ("MIT AND GPL-3.0-only OR Apache-2.0", "closed-source", "allow", "Apache-2.0"),
+    ("MIT OR Apache-2.0 AND GPL-3.0-only", "closed-source", "allow", "MIT"),
+    ("Apache-2.0 WITH LLVM-exception", "closed-source", "allow", None),
+    ("GPL-3.0-only WITH Classpath-exception-2.0", "closed-source", "deny", None),
+    ("mit or apache-2.0", "closed-source", "allow", "MIT"),
+    ("  ( MIT    OR   Apache-2.0 )  ", "closed-source", "allow", "MIT"),
+    ("((((MIT))))", "closed-source", "allow", None),
+    ("MIT AND NOASSERTION", "closed-source", "unknown", None),
+    ("MIT OR NOASSERTION", "closed-source", "allow", "MIT"),
+    ("LicenseRef-acme-internal", "closed-source", "deny", None),
+    ("LicenseRef-x AND MIT", "closed-source", "deny", None),
+    ("Some-Future-License-1.0", "closed-source", "unknown", None),
+    ("GPL-3.0-only", "oss", "allow", None),
+    ("GPL-3.0-only", "strict", "deny", None),
+    ("MIT", "strict", "allow", None),
+    ("CC-BY-SA-4.0", "closed-source", "deny", None),
+    ("AGPL-3.0-only", "closed-source", "deny", None),
+]
+
+
+@pytest.mark.parametrize(("expr", "policy", "verdict", "chosen"), MATRIX)
+def test_canonical_expression_matrix(expr, policy, verdict, chosen):
+    d = solve(expr, policy)
+    assert d.verdict == verdict, (expr, policy, d.reason)
+    if chosen:
+        assert chosen in d.chosen, d.chosen
