@@ -17,6 +17,22 @@ sbomkit scan .
 
 ---
 
+## Contents
+
+- [Why not just use an existing SBOM tool?](#why-not-just-use-an-existing-sbom-tool)
+- [Quick start](#quick-start)
+- [Example](#example)
+- [SBOM output](#sbom-output)
+- [Gate a pull request](#gate-a-pull-request)
+- [Supported inputs](#supported-inputs)
+- [Rules](#rules)
+- [Policies](#policies)
+- [Where license data comes from](#where-license-data-comes-from)
+- [MCP server](#mcp-server)
+- [Limitations](#limitations)
+- [Development](#development)
+- [License](#license)
+
 ## Why not just use an existing SBOM tool?
 
 Three things most scanners in this space get wrong, and sbomkit exists to get
