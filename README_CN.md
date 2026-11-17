@@ -1,5 +1,10 @@
 # sbomkit（中文说明）
 
+[![tests](https://img.shields.io/badge/tests-338-brightgreen)](https://github.com/xuange-hu/sbomkit/actions)
+[![python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![deps](https://img.shields.io/badge/runtime%20dependencies-0-brightgreen)](https://github.com/xuange-hu/sbomkit/blob/main/pyproject.toml)
+
 **零依赖的供应链体检工具。** 读取项目真正锁定的依赖，产出 CycloneDX / SPDX
 SBOM，判断"这个能不能发货"，并对比两份 SBOM，让 PR 能因为降级或许可证变更而失败。
 
